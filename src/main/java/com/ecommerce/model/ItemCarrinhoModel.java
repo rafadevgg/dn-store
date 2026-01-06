@@ -7,21 +7,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "TB_ITEMPEDIDO")
+@Table(name = "TB_ITEMCARRINHO")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 
-public class ItemPedidoModel {
+public class ItemCarrinhoModel {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CDITEMPEDIDO")
-    private Long cdItemPedido;
+    @Column(name = "CDITEMCARRINHO")
+    private Long cdItemCarrinho;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CDPEDIDO", referencedColumnName = "CDPEDIDO")
-    private PedidoModel cdPedido;
+    @JoinColumn(name = "CDCARRINHO", referencedColumnName = "CDCARRINHO")
+    private CarrinhoModel cdCarrinho;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CDPRODUTO", referencedColumnName = "CDPRODUTO")
@@ -32,8 +32,5 @@ public class ItemPedidoModel {
 
     @Column(name = "VLUNITARIO")
     private Double vlUnitario;
-
-    @Column(name = "VLSUBTOTAL")
-    private Double vlSubTotal;
 
 }
