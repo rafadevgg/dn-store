@@ -47,6 +47,4 @@ public class EnderecoModel {
     @Column(name = "STPADRAO")
     private Boolean stPadrao;
 
-
-
 }
