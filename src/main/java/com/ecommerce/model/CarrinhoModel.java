@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 
 public class CarrinhoModel {
 
@@ -25,7 +27,7 @@ public class CarrinhoModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CDUSUARIO", referencedColumnName = "CDUSUARIO")
-    private UsuarioModel cdUsuario;
+    private UsuarioModel usuario;
 
     @CreationTimestamp
     @Column(name = "DTCRIACAO")

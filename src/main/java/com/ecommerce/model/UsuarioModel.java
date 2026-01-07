@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "TB_USUARIO")
@@ -16,6 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 
 public class UsuarioModel {
 
@@ -45,5 +49,13 @@ public class UsuarioModel {
     @LastModifiedDate
     @Column(name = "DTATUALIZACAO")
     private LocalDateTime dtAtualizacao;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "TB_USUARIO_ROLE",
+            joinColumns = @JoinColumn(name = "CDUSUARIO"),
+            inverseJoinColumns = @JoinColumn(name = "CDROLE")
+    )
+    private Set<RoleModel> roles = new HashSet<>();
 
 }

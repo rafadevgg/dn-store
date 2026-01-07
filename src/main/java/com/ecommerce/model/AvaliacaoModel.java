@@ -24,11 +24,11 @@ public class AvaliacaoModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CDPRODUTO", referencedColumnName = "CDPRODUTO")
-    private ProdutoModel cdProduto;
+    private ProdutoModel produto;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CDUSUARIO", referencedColumnName = "CDUSUARIO")
-    private UsuarioModel cdUsuario;
+    private UsuarioModel usuario;
 
     @Column(name = "NRNOTA")
     private Integer nrNota;

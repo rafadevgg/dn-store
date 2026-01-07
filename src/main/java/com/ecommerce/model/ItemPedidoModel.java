@@ -21,11 +21,11 @@ public class ItemPedidoModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CDPEDIDO", referencedColumnName = "CDPEDIDO")
-    private PedidoModel cdPedido;
+    private PedidoModel pedido;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CDPRODUTO", referencedColumnName = "CDPRODUTO")
-    private ProdutoModel cdProduto;
+    private ProdutoModel produto;
 
     @Column(name = "QTITEM")
     private Integer qtItem;
