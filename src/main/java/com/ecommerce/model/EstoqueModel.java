@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 
 public class EstoqueModel {
 
@@ -24,7 +26,7 @@ public class EstoqueModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CDPRODUTO", referencedColumnName = "CDPRODUTO")
-    private ProdutoModel cdProduto;
+    private ProdutoModel produto;
 
     @Column(name = "QTESTOQUE")
     private Integer qtEstoque;

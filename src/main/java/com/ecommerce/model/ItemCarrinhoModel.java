@@ -21,11 +21,11 @@ public class ItemCarrinhoModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CDCARRINHO", referencedColumnName = "CDCARRINHO")
-    private CarrinhoModel cdCarrinho;
+    private CarrinhoModel carrinho;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CDPRODUTO", referencedColumnName = "CDPRODUTO")
-    private ProdutoModel cdProduto;
+    private ProdutoModel produto;
 
     @Column(name = "QTITEM")
     private Integer qtItem;

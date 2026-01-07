@@ -21,7 +21,7 @@ public class EnderecoModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CDUSUARIO", referencedColumnName = "CDUSUARIO")
-    private UsuarioModel cdUsuario;
+    private UsuarioModel usuario;
 
     @Column(name = "DSLOGRADOURO")
     private String dsLogradouro;
