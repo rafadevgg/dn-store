@@ -7,7 +7,6 @@ public record UsuarioResponseDto(
         Long cdUsuario,
         String nmUsuario,
         String dsEmail,
-        String dsSenha,
         String dsCpf,
         String dsTelefone,
         LocalDateTime dtCriacao,
