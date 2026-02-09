@@ -2,6 +2,8 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.request.EnderecoRequestDto;
 import com.ecommerce.dto.response.EnderecoResponseDto;
+import com.ecommerce.exception.BusinessException;
+import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.model.EnderecoModel;
 import com.ecommerce.model.UsuarioModel;
 import com.ecommerce.repository.EnderecoRepository;
@@ -18,14 +20,13 @@ import java.util.stream.Collectors;
 public class EnderecoService {
 
     private final EnderecoRepository enderecoRepository;
-
     private final UsuarioRepository usuarioRepository;
 
     @Transactional
     public EnderecoResponseDto criar(EnderecoRequestDto dto) {
 
         UsuarioModel usuario = usuarioRepository.findById(dto.cdUsuario())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + dto.cdUsuario()));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário", "ID", dto.cdUsuario()));
 
         EnderecoModel endereco = new EnderecoModel();
 
@@ -58,7 +59,7 @@ public class EnderecoService {
     public EnderecoResponseDto buscarPorId(Long id) {
 
         EnderecoModel endereco = enderecoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Endereço não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Endereço", "ID", id));
 
         return toResponseDto(endereco);
 
@@ -68,7 +69,7 @@ public class EnderecoService {
     public EnderecoResponseDto atualizar(Long id, EnderecoRequestDto dto) {
 
         EnderecoModel endereco = enderecoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Endereço não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Endereço", "ID", id));
 
         endereco.setDsLogradouro(dto.dsLogradouro());
         endereco.setDsNumero(dto.dsNumero());
@@ -92,7 +93,7 @@ public class EnderecoService {
     public void deletar(Long id) {
 
         if (!enderecoRepository.existsById(id)) {
-            throw new RuntimeException("Endereço não encontrado com ID: " + id);
+            throw new ResourceNotFoundException("Endereço", "ID", id);
         }
 
         enderecoRepository.deleteById(id);
@@ -103,7 +104,7 @@ public class EnderecoService {
     public void definirPadrao(Long id) {
 
         EnderecoModel endereco = enderecoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Endereço não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Endereço", "ID", id));
 
         enderecoRepository.findAll().stream()
                 .filter(e -> e.getUsuario().getCdUsuario().equals(endereco.getUsuario().getCdUsuario()))
@@ -121,7 +122,7 @@ public class EnderecoService {
     public EnderecoResponseDto validarCep(String cep) {
 
         if (!cep.matches("\\d{5}-?\\d{3}")) {
-            throw new RuntimeException("CEP inválido: " + cep);
+            throw new BusinessException("CEP inválido: " + cep);
         }
 
         return null;

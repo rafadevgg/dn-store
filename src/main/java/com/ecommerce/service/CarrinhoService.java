@@ -2,6 +2,7 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.request.CarrinhoRequestDto;
 import com.ecommerce.dto.response.CarrinhoResponseDto;
+import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.model.CarrinhoModel;
 import com.ecommerce.model.UsuarioModel;
 import com.ecommerce.repository.CarrinhoRepository;
@@ -18,14 +19,13 @@ import java.util.stream.Collectors;
 public class CarrinhoService {
 
     private final CarrinhoRepository carrinhoRepository;
-
     private final UsuarioRepository usuarioRepository;
 
     @Transactional
     public CarrinhoResponseDto adicionar(CarrinhoRequestDto dto) {
 
         UsuarioModel usuario = usuarioRepository.findById(dto.cdUsuario())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + dto.cdUsuario()));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário", "ID", dto.cdUsuario()));
 
         CarrinhoModel carrinho = new CarrinhoModel();
 
@@ -50,7 +50,7 @@ public class CarrinhoService {
     public CarrinhoResponseDto buscarPorId(Long id) {
 
         CarrinhoModel carrinho = carrinhoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Carrinho não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Carrinho", "ID", id));
 
         return toResponseDto(carrinho);
 
@@ -60,7 +60,7 @@ public class CarrinhoService {
     public void remover(Long id) {
 
         if (!carrinhoRepository.existsById(id)) {
-            throw new RuntimeException("Carrinho não encontrado com ID: " + id);
+            throw new ResourceNotFoundException("Carrinho", "ID", id);
         }
 
         carrinhoRepository.deleteById(id);
@@ -71,7 +71,7 @@ public class CarrinhoService {
     public void limpar(Long id) {
 
         CarrinhoModel carrinho = carrinhoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Carrinho não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Carrinho", "ID", id));
 
         carrinhoRepository.save(carrinho);
 
@@ -81,7 +81,7 @@ public class CarrinhoService {
     public Double calcularTotal(Long id) {
 
         CarrinhoModel carrinho = carrinhoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Carrinho não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Carrinho", "ID", id));
 
         return 0.0;
 

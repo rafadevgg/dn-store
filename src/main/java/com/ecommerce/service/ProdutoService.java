@@ -2,6 +2,7 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.request.ProdutoRequestDto;
 import com.ecommerce.dto.response.ProdutoResponseDto;
+import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.model.CategoriaModel;
 import com.ecommerce.model.ProdutoModel;
 import com.ecommerce.repository.CategoriaRepository;
@@ -18,14 +19,13 @@ import java.util.stream.Collectors;
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
-
     private final CategoriaRepository categoriaRepository;
 
     @Transactional
     public ProdutoResponseDto criar(ProdutoRequestDto dto) {
 
         CategoriaModel categoria = categoriaRepository.findById(dto.cdCategoria())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada com ID: " + dto.cdCategoria()));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria", "ID", dto.cdCategoria()));
 
         ProdutoModel produto = new ProdutoModel();
 
@@ -56,7 +56,7 @@ public class ProdutoService {
     public ProdutoResponseDto buscarPorId(Long id) {
 
         ProdutoModel produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto", "ID", id));
 
         return toResponseDto(produto);
 
@@ -66,10 +66,10 @@ public class ProdutoService {
     public ProdutoResponseDto atualizar(Long id, ProdutoRequestDto dto) {
 
         ProdutoModel produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto", "ID", id));
 
         CategoriaModel categoria = categoriaRepository.findById(dto.cdCategoria())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada com ID: " + dto.cdCategoria()));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria", "ID", dto.cdCategoria()));
 
         produto.setCategoria(categoria);
         produto.setNmProduto(dto.nmProduto());
@@ -92,7 +92,7 @@ public class ProdutoService {
     public void deletar(Long id) {
 
         if (!produtoRepository.existsById(id)) {
-            throw new RuntimeException("Produto não encontrado com ID: " + id);
+            throw new ResourceNotFoundException("Produto", "ID", id);
         }
 
         produtoRepository.deleteById(id);
@@ -103,7 +103,7 @@ public class ProdutoService {
     public void ativar(Long id) {
 
         ProdutoModel produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto", "ID", id));
 
         produto.setStAtivo(true);
         produtoRepository.save(produto);
@@ -114,7 +114,7 @@ public class ProdutoService {
     public void desativar(Long id) {
 
         ProdutoModel produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto", "ID", id));
 
         produto.setStAtivo(false);
         produtoRepository.save(produto);
@@ -125,7 +125,7 @@ public class ProdutoService {
     public Double calcularPrecoPromocional(Long id, Double percentualDesconto) {
 
         ProdutoModel produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto", "ID", id));
 
         return produto.getVlProduto() * (1 - percentualDesconto / 100);
 

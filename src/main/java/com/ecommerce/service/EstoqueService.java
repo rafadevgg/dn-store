@@ -2,6 +2,8 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.request.EstoqueRequestDto;
 import com.ecommerce.dto.response.EstoqueResponseDto;
+import com.ecommerce.exception.BusinessException;
+import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.model.EstoqueModel;
 import com.ecommerce.model.ProdutoModel;
 import com.ecommerce.repository.EstoqueRepository;
@@ -91,16 +93,15 @@ public class EstoqueService {
     public void reservar(Long id, Integer quantidade) {
 
         EstoqueModel estoque = estoqueRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Estoque não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Estoque", "ID", id));
 
         int disponiveis = estoque.getQtEstoque() - estoque.getQtReservado();
 
         if (disponiveis < quantidade) {
-            throw new RuntimeException("Quantidade insuficiente em estoque. Disponível: " + disponiveis);
+            throw new BusinessException("Quantidade insuficiente em estoque. Disponível: " + disponiveis);
         }
 
         estoque.setQtReservado(estoque.getQtReservado() + quantidade);
-
         estoqueRepository.save(estoque);
 
     }
@@ -109,12 +110,12 @@ public class EstoqueService {
     public void liberarReserva(Long id, Integer quantidade) {
 
         EstoqueModel estoque = estoqueRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Estoque não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Estoque", "ID", id));
 
         int novaQuantidadeReservada = estoque.getQtReservado() - quantidade;
 
         if (novaQuantidadeReservada < 0) {
-            throw new RuntimeException("Quantidade a liberar maior que quantidade reservada");
+            throw new BusinessException("Quantidade a liberar maior que quantidade reservada");
         }
 
         estoque.setQtReservado(novaQuantidadeReservada);

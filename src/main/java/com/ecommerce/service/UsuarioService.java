@@ -2,6 +2,8 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.request.UsuarioRequestDto;
 import com.ecommerce.dto.response.UsuarioResponseDto;
+import com.ecommerce.exception.BusinessException;
+import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.model.UsuarioModel;
 import com.ecommerce.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,6 @@ import java.util.stream.Collectors;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -50,7 +51,7 @@ public class UsuarioService {
     public UsuarioResponseDto buscarPorId(Long id) {
 
         UsuarioModel usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário", "ID", id));
 
         return toResponseDto(usuario);
 
@@ -60,7 +61,7 @@ public class UsuarioService {
     public UsuarioResponseDto atualizar(Long id, UsuarioRequestDto dto) {
 
         UsuarioModel usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário", "ID", id));
 
         usuario.setNmUsuario(dto.nmUsuario());
         usuario.setDsEmail(dto.dsEmail());
@@ -82,7 +83,7 @@ public class UsuarioService {
     public void deletar(Long id) {
 
         if (!usuarioRepository.existsById(id)) {
-            throw new RuntimeException("Usuário não encontrado com ID: " + id);
+            throw new ResourceNotFoundException("Usuário", "ID", id);
         }
 
         usuarioRepository.deleteById(id);
@@ -93,10 +94,10 @@ public class UsuarioService {
     public void alterarSenha(Long id, String senhaAtual, String novaSenha) {
 
         UsuarioModel usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário", "ID", id));
 
         if (!passwordEncoder.matches(senhaAtual, usuario.getDsSenha())) {
-            throw new RuntimeException("Senha atual incorreta");
+            throw new BusinessException("Senha atual incorreta");
         }
 
         usuario.setDsSenha(passwordEncoder.encode(novaSenha));
