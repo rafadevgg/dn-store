@@ -2,6 +2,8 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.request.PedidoRequestDto;
 import com.ecommerce.dto.response.PedidoResponseDto;
+import com.ecommerce.exception.BusinessException;
+import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.model.*;
 import com.ecommerce.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -97,10 +99,10 @@ public class PedidoService {
     public void confirmar(Long id) {
 
         PedidoModel pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido", "ID", id));
 
         if (!pedido.getStPedido().equals("PENDENTE")) {
-            throw new RuntimeException("Apenas pedidos pendentes podem ser confirmados");
+            throw new BusinessException("Apenas pedidos pendentes podem ser confirmados");
         }
 
         pedido.setStPedido("CONFIRMADO");
@@ -112,10 +114,10 @@ public class PedidoService {
     public void cancelar(Long id) {
 
         PedidoModel pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido", "ID", id));
 
         if (pedido.getStPedido().equals("ENTREGUE") || pedido.getStPedido().equals("CANCELADO")) {
-            throw new RuntimeException("Pedido não pode ser cancelado no status atual: " + pedido.getStPedido());
+            throw new BusinessException("Pedido não pode ser cancelado no status atual: " + pedido.getStPedido());
         }
 
         pedido.setStPedido("CANCELADO");

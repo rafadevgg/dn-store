@@ -2,6 +2,7 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.request.CategoriaRequestDto;
 import com.ecommerce.dto.response.CategoriaResponseDto;
+import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.model.CategoriaModel;
 import com.ecommerce.repository.CategoriaRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class CategoriaService {
     public CategoriaResponseDto buscarPorId(Long id) {
 
         CategoriaModel categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria", "ID", id));
 
         return toResponseDto(categoria);
 
@@ -55,7 +56,7 @@ public class CategoriaService {
     public CategoriaResponseDto atualizar(Long id, CategoriaRequestDto dto) {
 
         CategoriaModel categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria", "ID", id));
 
         categoria.setNmCategoria(dto.nmCategoria());
         categoria.setDsCategoria(dto.dsCategoria());
@@ -71,7 +72,7 @@ public class CategoriaService {
     public void deletar(Long id) {
 
         if (!categoriaRepository.existsById(id)) {
-            throw new RuntimeException("Categoria não encontrada com ID: " + id);
+            throw new ResourceNotFoundException("Categoria", "ID", id);
         }
 
         categoriaRepository.deleteById(id);

@@ -2,6 +2,7 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.request.AvaliacaoRequestDto;
 import com.ecommerce.dto.response.AvaliacaoResponseDto;
+import com.ecommerce.exception.BusinessException;
 import com.ecommerce.model.AvaliacaoModel;
 import com.ecommerce.model.ProdutoModel;
 import com.ecommerce.model.UsuarioModel;
@@ -100,7 +101,7 @@ public class AvaliacaoService {
     public void validarNota(Integer nota) {
 
         if (nota < 1 || nota > 5) {
-            throw new RuntimeException("A nota deve estar entre 1 e 5. Nota informada: " + nota);
+            throw new BusinessException("A nota deve estar entre 1 e 5. Nota informada: " + nota);
         }
 
     }

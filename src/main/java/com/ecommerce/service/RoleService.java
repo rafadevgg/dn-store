@@ -2,6 +2,8 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.request.RoleRequestDto;
 import com.ecommerce.dto.response.RoleResponseDto;
+import com.ecommerce.exception.BusinessException;
+import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.model.RoleModel;
 import com.ecommerce.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +26,10 @@ public class RoleService {
                 .anyMatch(role -> role.getNmRole().equals(dto.nmRole()));
 
         if (roleExiste) {
-            throw new RuntimeException("Role já existe: " + dto.nmRole());
+            throw new BusinessException("Role já existe: " + dto.nmRole());
         }
 
         RoleModel role = new RoleModel();
-
         role.setNmRole(dto.nmRole());
 
         RoleModel salva = roleRepository.save(role);
@@ -60,14 +61,13 @@ public class RoleService {
     public RoleResponseDto atualizar(Long id, RoleRequestDto dto) {
 
         RoleModel role = roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Role não encontrada com ID: " + id));
-
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "ID", id));
 
         boolean nomeJaExiste = roleRepository.findAll().stream()
                 .anyMatch(r -> r.getNmRole().equals(dto.nmRole()) && !r.getCdRole().equals(id));
 
         if (nomeJaExiste) {
-            throw new RuntimeException("Já existe uma role com este nome: " + dto.nmRole());
+            throw new BusinessException("Já existe uma role com este nome: " + dto.nmRole());
         }
 
         role.setNmRole(dto.nmRole());
