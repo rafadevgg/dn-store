@@ -51,7 +51,7 @@ public class RoleService {
     public RoleResponseDto buscarPorId(Long id) {
 
         RoleModel role = roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Role não encontrada com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "ID", id));
 
         return toResponseDto(role);
 
@@ -82,7 +82,7 @@ public class RoleService {
     public void deletar(Long id) {
 
         if (!roleRepository.existsById(id)) {
-            throw new RuntimeException("Role não encontrada com ID: " + id);
+            throw new ResourceNotFoundException("Role", "ID", id);
         }
 
         roleRepository.deleteById(id);

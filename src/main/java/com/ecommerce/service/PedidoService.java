@@ -33,10 +33,10 @@ public class PedidoService {
     public PedidoResponseDto criar(PedidoRequestDto dto) {
 
         UsuarioModel usuario = usuarioRepository.findById(dto.cdUsuario())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + dto.cdUsuario()));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário", "ID", dto.cdUsuario()));
 
         EnderecoModel endereco = enderecoRepository.findById(dto.cdEndereco())
-                .orElseThrow(() -> new RuntimeException("Endereço não encontrado com ID: " + dto.cdEndereco()));
+                .orElseThrow(() -> new ResourceNotFoundException("Endereço", "ID", dto.cdEndereco()));
 
         PedidoModel pedido = new PedidoModel();
 
@@ -50,7 +50,7 @@ public class PedidoService {
         double totalItens = 0.0;
         for (PedidoRequestDto.ItemPedidoRequest item : dto.itens()) {
             ProdutoModel produto = produtoRepository.findById(item.cdProduto())
-                    .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + item.cdProduto()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Produto", "ID", item.cdProduto()));
             totalItens += produto.getVlProduto() * item.qtItem();
         }
 
@@ -89,7 +89,7 @@ public class PedidoService {
     public PedidoResponseDto buscarPorId(Long id) {
 
         PedidoModel pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido", "ID", id));
 
         return toResponseDto(pedido);
 
@@ -129,7 +129,7 @@ public class PedidoService {
     public Double calcularTotal(Long id) {
 
         PedidoModel pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido", "ID", id));
 
         return pedido.getVlTotal();
 
@@ -139,12 +139,12 @@ public class PedidoService {
     public void atualizarStatus(Long id, String novoStatus) {
 
         PedidoModel pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido", "ID", id));
 
         List<String> statusPermitidos = List.of("PENDENTE", "CONFIRMADO", "PROCESSANDO", "ENVIADO", "ENTREGUE", "CANCELADO");
 
         if (!statusPermitidos.contains(novoStatus)) {
-            throw new RuntimeException("Status inválido: " + novoStatus);
+            throw new BusinessException("Status inválido: " + novoStatus);
         }
 
         pedido.setStPedido(novoStatus);
